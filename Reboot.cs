@@ -45,16 +45,16 @@ namespace RebootTestApp
             IntPtr zero = IntPtr.Zero;
 
             var currentProcess = Reboot.GetCurrentProcess();
-            Console.WriteLine($"Reboot.GetCurrentProcess() возвращено {currentProcess}");
+            Console.WriteLine($"Reboot.GetCurrentProcess() returned {currentProcess}");
             
             var processToken = Reboot.OpenProcessToken(currentProcess, 40, ref zero);
-            Console.WriteLine($"Reboot.OpenProcessToken(currentProcess, 40, ref zero) возвращено {processToken}");
+            Console.WriteLine($"Reboot.OpenProcessToken(currentProcess, 40, ref zero) returned {processToken}");
             
 
             if (!processToken)
             {
                 var errorCode = GetLastError();
-                Console.WriteLine($"Т.к. processToken = false, выполнение SetPriv() остановлено ErrorCode = {errorCode}");
+                Console.WriteLine($"processToken = false, SetPriv() stoped. ErrorCode = {errorCode}");
                 return;
             }
                 
@@ -64,19 +64,19 @@ namespace RebootTestApp
             newst.Attr = 2;
             newst.Luid = 0L;
             var lookupPrivilegeValue = Reboot.LookupPrivilegeValue((string)null, "SeShutdownPrivilege", ref newst.Luid);
-            Console.WriteLine($"Reboot.LookupPrivilegeValue((string)null, \"SeShutdownPrivilege\", ref newst.Luid) возвращено {lookupPrivilegeValue}");
+            Console.WriteLine($"Reboot.LookupPrivilegeValue((string)null, \"SeShutdownPrivilege\", ref newst.Luid) returned {lookupPrivilegeValue}");
             if (!lookupPrivilegeValue)
             {
                 var errorCode = GetLastError();
-                Console.WriteLine($"Ошибка в LookupPrivilegeValue() ErrorCode = {errorCode}");
+                Console.WriteLine($"Error в LookupPrivilegeValue() ErrorCode = {errorCode}");
             }
 
             var adjustTokenPrivileges = Reboot.AdjustTokenPrivileges(zero, false, ref newst, 0, IntPtr.Zero, IntPtr.Zero);
-            Console.WriteLine($"Reboot.AdjustTokenPrivileges(zero, false, ref newst, 0, IntPtr.Zero, IntPtr.Zero) возвращено {adjustTokenPrivileges}");
+            Console.WriteLine($"Reboot.AdjustTokenPrivileges(zero, false, ref newst, 0, IntPtr.Zero, IntPtr.Zero) returned {adjustTokenPrivileges}");
             if (!adjustTokenPrivileges)
             {
                 var errorCode = GetLastError();
-                Console.WriteLine($"Ошибка в AdjustTokenPrivileges() ErrorCode = {errorCode}");
+                Console.WriteLine($"Error в AdjustTokenPrivileges() ErrorCode = {errorCode}");
             }
         }
 
@@ -85,6 +85,11 @@ namespace RebootTestApp
             SetPriv();
             //return InitiateSystemShutdown(null, null, 0, Force, RSh);
             return 0;
+        }
+
+        public int Shutdown(bool RSh, bool Force)
+        {
+            return InitiateSystemShutdown(null, null, 0, Force, RSh);
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]

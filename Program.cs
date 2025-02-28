@@ -11,11 +11,19 @@ namespace RebootTestApp
         static void Main(string[] args)
         {
             var reboot = new Reboot();
-            Console.WriteLine("Тест получения привелегий\nEnter для продолжения");
+            var forceFlag = true;
+           
+            Console.WriteLine("Test to set privileges");
+            Console.WriteLine($"forceFlag = {forceFlag}\nEnter to continue");
             Console.ReadLine();
 
-            reboot.halt(false, true);
-            Console.ReadLine();
+            reboot.halt(true, forceFlag);
+            Console.WriteLine("Do you want to reboot system? (y/n)");
+            var answer = Console.ReadLine();
+            if(answer = "y")
+            {
+                reboot.Shutdown(true, forceFlag);
+            }
 
         }
     }
